@@ -1,5 +1,6 @@
 package zimu.gui;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,15 +10,22 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
+import zimu.common.ZiMuCommon;
+
 public class SubTitlePopupMenu {
 	JPopupMenu popupMenu;
 	Map<String, ActionListener> actionListenerMap = new HashMap<String, ActionListener>();
 	JTable jTable;
 	public boolean simplified = false;
+	
+	String titleStr = "";
+	String titleCnStr = "";
+	
 	public SubTitlePopupMenu(JTable jTable) {
 		popupMenu = new JPopupMenu();
 		this.jTable = jTable;
 		setJTable();
+		addDefaultEvent();
 	}
 
 	public void createPopupMenu() {
@@ -33,7 +41,33 @@ public class SubTitlePopupMenu {
 		add("下载字幕(UTF-8 繁转简)", "download_simplified_utf8");
 		add("下载字幕(GBK 繁转简)", "download_simplified_gbk");
 		add("下载字幕(Big5 繁转简)", "download_simplified_big5");
+		popupMenu.addSeparator();
+		if(titleStr!=null && titleStr.length() > 0) {
+			add("复制文字："+titleStr, "copy_title");
+		}
+		if(titleCnStr!=null && titleCnStr.length() > 0) {
+			add("复制文字："+titleCnStr, "copy_title_cn");
+		}
+		
+		//popupMenu.addSeparator();
+		//add("当前目录改名为xxxx", "rename_title");
+		//add("当前目录改名为xxxx", "rename_title_cn");
 
+	}
+	
+	public void addDefaultEvent() {
+		addEvent("copy_title", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ZiMuCommon.copyClipboard(titleStr);
+			}
+		});
+		addEvent("copy_title_cn", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ZiMuCommon.copyClipboard(titleCnStr);
+			}
+		});
 	}
 
 	public void setJTable() {
@@ -54,6 +88,18 @@ public class SubTitlePopupMenu {
 //					}
 					// 将表格所选项设为当前右键点击的行
 					jTable.setRowSelectionInterval(focusedRowIndex, focusedRowIndex);
+					int selRow = jTable.getSelectedRow();
+					if(selRow > -1) {
+						String title = (String) jTable.getValueAt(selRow, 2);
+						if(title.contains(".")) {
+							title = title.substring(0, title.lastIndexOf("."));
+						}
+						if(title.contains("下载次数")) {
+							title = title.replaceAll("\\[[^]]*]\\[[^]]*]\\[下载次数.+]", "");
+						}
+						titleStr = title;
+						titleCnStr = ZiMuCommon.getTitleCnStr(title);
+					}
 					popupMenu.removeAll();
 					createPopupMenu();
 					

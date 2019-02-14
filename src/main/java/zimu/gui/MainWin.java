@@ -77,7 +77,7 @@ public class MainWin {
 
 	public static void init() {
 		GuiConfig.setUIFont();
-		frame = new JFrame(String.format("%s %s", AppConfig.appTitle, AppConfig.appVer));
+		frame = new JFrame(String.format("%s V%s", AppConfig.appTitle, AppConfig.appVer));
 		frame.setSize(920, 600);
 		frame.setMinimumSize(new Dimension(800, 500));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,6 +140,10 @@ public class MainWin {
 				File file = jfc.getSelectedFile();
 				if (file != null && file.isFile()) {
 					String filepath = file.getAbsolutePath();
+					if(file.isDirectory()) {
+						alert("请选择有效的视频文件");
+						return;
+					}
 					setFile(filepath);
 					startSearch();
 				}
@@ -518,7 +522,8 @@ public class MainWin {
 
 	}	
 	public static void setFile(String filepath) {
-		lastSelPath = (new File(filepath)).getParentFile().getAbsolutePath();
+		File file = new File(filepath);
+		lastSelPath = file.getParentFile().getAbsolutePath();
 		filePathText.setText(filepath);
 		movFilename = filepath;
 		logger.info(movFilename);
@@ -549,7 +554,11 @@ public class MainWin {
 					if (filepath.endsWith("]")) {
 						filepath = filepath.substring(0, filepath.length() - 1);
 					}
-					
+					File file = new File(filepath);
+					if(file.isDirectory()) {
+						alert("请选择有效的视频文件");
+						return false;
+					}
 					setFile(filepath);
 					startSearch();
 					//JOptionPane.showMessageDialog(frame, filepath);

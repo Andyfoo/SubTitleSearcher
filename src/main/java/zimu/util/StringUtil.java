@@ -87,6 +87,7 @@ public class StringUtil {
 		return extName(file.getName());
 	}
 
+
 	public static void main(String[] args) {
 
 	}

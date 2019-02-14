@@ -131,7 +131,7 @@ public class DownZIMu {
 		
 		JSONArray list = null;
 		String filenameStr = StringUtil.basename(MainWin.movFilename);
-		String filenameBase = filenameStr.substring(0, filenameStr.lastIndexOf("."));
+		String filenameBase = filenameStr.contains(".")?filenameStr.substring(0, filenameStr.lastIndexOf(".")):filenameStr;
 		
 		//射手
 		if(MainWin.sheshouCheckBox.isSelected()) {
