@@ -89,7 +89,7 @@ public class XGlassPane extends JComponent implements MouseListener {
 		parent.setGlassPane(this);
 		
 		//loading
-		loadingImg = new ImageIcon(XGlassPane.class.getClass().getResource("/res/img/loading.gif"));
+		loadingImg = new ImageIcon(XGlassPane.class.getResource("/res/img/loading.gif"));
 		//loadingImg.setImage(loadingImg.getImage().getScaledInstance((int)(loadingImg.getIconWidth()*0.8), (int)(loadingImg.getIconHeight()*0.8), Image.SCALE_DEFAULT));
 		loadingLabelAni = new JLabel(loadingImg);
 		loadingLabelAniBounds = new Rectangle(100, 200, loadingImg.getIconWidth(), loadingImg.getIconHeight());

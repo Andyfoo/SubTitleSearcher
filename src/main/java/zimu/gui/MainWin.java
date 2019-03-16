@@ -46,7 +46,7 @@ import zimu.util.gui.XGlassPane;
 
 public class MainWin {
 	static final Log logger = LogFactory.get();
-	public static Image icon = Toolkit.getDefaultToolkit().getImage(MainWin.class.getClass().getResource("/res/icon/app.png")); 
+	public static Image icon = Toolkit.getDefaultToolkit().getImage(MainWin.class.getResource("/res/icon/app.png")); 
 	public static JFrame frame;
 	public static JPanel filePathPanel;
 	public static JTextField filePathText;
@@ -231,7 +231,7 @@ public class MainWin {
 		btnsPanel.add(downButton);
 
 		
-		ImageIcon aboutImg = new ImageIcon(MainWin.class.getClass().getResource("/res/img/about.png"));
+		ImageIcon aboutImg = new ImageIcon(MainWin.class.getResource("/res/img/about.png"));
 		aboutButton = new JLabel(aboutImg);
 		aboutButton.setBorder(BorderFactory.createEmptyBorder(6, 20, 6, 20));
 		aboutButton.addMouseListener(new MouseListener() {
