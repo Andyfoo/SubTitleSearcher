@@ -6,7 +6,7 @@ import zimu.util.StringUtil;
 public class AppConfig {
 	public static String appName = "SubTitleSearcher";
 	public static String appTitle = "字幕下载";
-	public static String appVer = "1.3.0";
+	public static String appVer = "1.3.1";
 	
 	public static String appPath;
 	public static boolean isExe;

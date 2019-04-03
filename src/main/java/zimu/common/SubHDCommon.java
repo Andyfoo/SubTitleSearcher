@@ -13,17 +13,9 @@ import zimu.util.HtHttpUtil;
 import zimu.util.StringUtil;
 import zimu.util.regex.RegexUtil;
 
-public class ZIMuKuCommon {
+public class SubHDCommon {
 	static final Log logger = LogFactory.get();
-	/**
-	 * 字幕库启用新域名：www.zimuku.la （强烈推荐收藏永久备用米：zmk.tw）
-
-	 */
-	//static String baseUrl = "https://www.zimuku.cn";
-	static String baseUrl = "https://www.zimuku.la";
-
-	
-	
+	static String baseUrl = "http://subhd.com";
 	
 	public static void main(String[] args) throws Exception {
 		//System.out.println(DownList("憨豆特工.mkv"));
@@ -110,17 +102,15 @@ public class ZIMuKuCommon {
 		String result = HtHttpUtil.http.get(baseUrl+url);
 		//System.out.println(result);
 		JSONArray resList = RegexUtil.getMatchList(result, 
-				"<a\\s+href=\"(/detail/[\\w]+\\.html)\"\\s+target=\"_blank\"\\s+title=\"([^\"]*)\">"
-				+ ".*?<span\\s+class=\"label\\s+label-info\">(.*?)</span>"
-				+ ".*?<img\\s+border=\"0\"\\s+src=\".*?\"\\s+alt=\"(.*?)\""
-				+ ".*?title=\"字幕质量:(.*?)\">"
-				+ ".*?<td\\s+class=\"tac\\s+hidden-xs\">([\\d]+)</td>", Pattern.DOTALL);
-		//System.out.println(resList);
+				"<td\\s+class=\"dt_down\">.*?"
+				+ "<td\\s+class=\"dt_count\">\\s+([\\d]+)\\s+<br>.*?</tr>"
+				, Pattern.DOTALL);
+		System.out.println(resList);
 		if(resList == null) {
 			return new JSONArray();
 		}
 		
-		
+	
 		return resList;
 	}
 	
@@ -179,10 +169,9 @@ public class ZIMuKuCommon {
 	 * @return
 	 */
 	public static JSONArray getPageList(String title) {
-		String result = HtHttpUtil.http.get(baseUrl+"/search?q="+HttpUtil.encodeUtf8(title));
+		String result = HtHttpUtil.http.get(baseUrl+"/search0/"+HttpUtil.encodeUtf8(title));
 		//System.out.println(result);
-		JSONArray resList = RegexUtil.getMatchList(result, "<p\\s+class=\"tt\\s+clearfix\"><a\\s+href=\"(/subs/[\\w]+\\.html)\"\\s+"
-				+ "target=\"_blank\"><b>(.*?)</b></a></p>", Pattern.DOTALL);
+		JSONArray resList = RegexUtil.getMatchList(result, "<a href=\"(/do[\\w]+/[\\w]+)\"><img", Pattern.DOTALL);
 		//System.out.println(resList);
 		if(resList == null) {
 			return new JSONArray();
