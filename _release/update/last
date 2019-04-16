@@ -1,5 +1,6 @@
 {
 	"version" : "1.3.2",
 	"type" : "exe",
+	"sign" : "145316371511956db5540f2ea608800c",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/_release/SubTitleSearcher/SubTitleSearcher.exe",
 }
