@@ -1,7 +1,7 @@
 {
 	"version" : "2.3.2",
 	"type" : "exe",
-	"sign" : "56AC6FCF0023E64008E3F2C0CC7D299C",
+	"sign" : "20924F34416FBAE5E88EA3CDC5F4ABA4",
 	"desc" : "增加SubHd源，更新界面风格",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/__upgrade_files/SubTitleSearcher.exe",
 } 
