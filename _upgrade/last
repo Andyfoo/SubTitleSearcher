@@ -1,5 +1,5 @@
 {
-	"version" : "2.3.2",
+	"version" : "2.0.1",
 	"type" : "exe",
 	"sign" : "20924F34416FBAE5E88EA3CDC5F4ABA4",
 	"desc" : "增加SubHd源，更新界面风格",
