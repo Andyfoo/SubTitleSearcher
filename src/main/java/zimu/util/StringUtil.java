@@ -87,6 +87,16 @@ public class StringUtil {
 		return extName(file.getName());
 	}
 
+	
+	/**
+	 * 获取基础网址
+	 * @param url
+	 * @return
+	 */
+	public static String getBaseUrl(String url) {
+		int pos = url.indexOf("/", 10);
+		return pos > 0 ? url.substring(0, pos+1) : url+"/";
+	}
 
 	public static void main(String[] args) {
 

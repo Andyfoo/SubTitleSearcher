@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<title>SubTitleSearcher</title>
+<link rel="stylesheet" href="images/css/style.css">
+<script src="images/js/jquery.min.js"></script>
+<link rel="stylesheet" href="images/js/layer/theme/default/layer.css">
+<script src="images/js/layer/layer.js"></script>
+
+<link rel="stylesheet" href="images/js/plugins/newforms/skins/default/style.css">
+<script src="images/js/plugins/newforms/jquery.newforms.js"></script>
+
+<link rel="stylesheet" href="images/js/plugins/ContextMenu/contextMenu.css">
+<script src="images/js/plugins/ContextMenu/contextMenu.js"></script>
+<script src="images/js/common.js"></script>
+<script src="images/js/main.js"></script>
+</head>
+<body oncontextmenu="return false">
+<style>
+.newforms_input_text{
+	display:block;
+}
+#btn_about{
+	background:url(images/btn_about.png) no-repeat;
+	background-size:cover;
+	border:0;
+	width:20px;
+	height:20px;
+	vertical-align: middle;
+}
+#btn_about:hover{
+	opacity: 0.8;
+}
+
+.list_table .title{
+	color:#333;
+}
+.list_table .info1{
+	margin-top:5px;
+	color:#888;
+}
+.list_table .info2{
+	margin-top:5px;
+	color:#aaa;
+}
+.list_table .rate{
+	margin-top:5px;
+	color:#F7A961;
+}
+.list_table .from{
+	margin-top:5px;
+	color:#999;
+}
+ 
+.download{
+	opacity:.5; 
+}
+
+</style>
+	<div id="search_box">
+		<div class="con">
+			<form action="?" method="get" name="search_from" id="search_from">
+				<table cellpadding="0" cellspacing="0" border="0" width="100%">
+					<tr>
+						<td height="32">
+							<input type="text" name="filename" value="" placeholder="请选择文件或拖拽文件到这里......" style="width:100%;" readonly />
+						</td>
+						<td width="160" align="center">
+							<input type="button" value="选择文件" id="btn_sel_file" />
+							<input type="button" value="搜索" id="btn_search" />
+							<input type="button" value="" id="btn_about"  />
+						</td>
+					</tr>
+					<tr>
+						<td height="32" align="center" colspan="2">
+							<label><input type="checkbox" name="froms" value="sheshou" /> 射手</label>
+							&nbsp;&nbsp;&nbsp;
+							<label><input type="checkbox" name="froms" value="xunlei" /> 迅雷</label>
+							&nbsp;&nbsp;&nbsp;
+							<label><input type="checkbox" name="froms" value="zimuku" /> 字幕库</label>
+							&nbsp;&nbsp;&nbsp;
+							<label><input type="checkbox" name="froms" value="subhd" /> SubHD</label>
+							
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div style="background:#ccc;line-height:32px;text-align:center;color:blue" id="status_label">
+		请选择视频文件后查询
+		</div>
+	</div>
+	<form action="?" method="get" name="batch_from" id="batch_from">
+	<div id="list_body">
+		<table width="100%" border="0" cellpadding="3" cellspacing="0" class="list_table">
+			<tbody id="rec_list">
+			<script id="rec_list_tpl" type="text/html">
+			<<# for(var i = 0, len = d.list.length; i < len; i++){ var row = d.list[i];>>
+				<tr>
+					<td width="60" align="center"><input type="checkbox" name="item_id" value="<< i >>" /> << i+1 >></td>
+					<td align="left">
+						<div class="title"><< row.title >></div>
+						<<# if(row.from == '迅雷'){>>
+						<div class="info1"><< row.data.language >></div>
+						<<# }else if(row.from == '字幕库'){>>
+						<div class="info1"><< row.data.ext >>，<< row.data.lang >>，下载次数:<< row.data.downCount >></div>
+							<<# if(row.data.authorInfo){>>
+						<div class="info2"><< row.data.authorInfo >></div>
+							<<# }>>
+						<<# }else if(row.from == 'SubHD'){>>
+						<div class="info1"><< row.data.ext >>，<< row.data.lang >>，下载次数:<< row.data.downCount >></div>
+							<<# if(row.data.zimuzu){>>
+						<div class="info2"><< row.data.zimuzu >></div>
+							<<# }>>
+						<<# }>>
+					</td>
+					<td width="60" align="center"><div class="rate"><< row.rate >></div><div class="from"><< row.from >></div></td>
+					<td width="115" align="center">
+						<select style="width:110px;" name="item_simplified_charset">
+							<option value="">默认编码</option>
+							<option value="UTF-8">UTF-8 繁转简</option>
+							<option value="GBK">GBK 繁转简</option>
+							<option value="Big5">Big5 繁转简</option>
+						</select></td>
+					<td width="60" align="center"><input type="button" value="下载" class="download" /></td>
+
+				</tr>
+			<<# } >>
+			</script>
+			</tbody>
+		</table>
+	</div>
+	<div id="list_footer">
+		<table cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr>
+				<td style="padding:0 10px;">
+					<label><input type="checkbox" id="select_all" value="1" /> 全选</label>
+					&nbsp;&nbsp;&nbsp;
+					<input type="button" value="下载选中字幕" id="btn_download" />
+					&nbsp;&nbsp;&nbsp;
+					<label><input type="checkbox" id="simplified_select_all" value="1" /> 繁体转简体</label>
+				</td>
+				<td width="200" align="center" style="color:red">
+					下载后会覆盖原字幕，请谨慎操作！
+				</td>
+			</tr>
+		</table>
+	</div>
+	</form>
+	<script src="images/js/mainwin.js"></script>
+</body>
+</html>

@@ -150,7 +150,7 @@ public class MyFileUtil {
 					throw new Exception("文件不存在，创建失败！");
 
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(e);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class MyFileUtil {
 			}
 
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 		}
 	}
 
@@ -226,7 +226,7 @@ public class MyFileUtil {
 			fw.close();
 			return true;
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 			return false;
 		}
 	}
@@ -245,7 +245,7 @@ public class MyFileUtil {
 			fos.close();
 			return true;
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(e);
 			return false;
 		}
 	}
@@ -272,7 +272,7 @@ public class MyFileUtil {
 		try {
 			return fileRead(new FileInputStream(file), encode);
 		} catch (FileNotFoundException e) {
-			logger.error("", e);
+			logger.error(e);
 			return null;
 		}
 	}
@@ -287,7 +287,7 @@ public class MyFileUtil {
 			}
 			fw.close();
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 		}
 		return strb.toString();
 	}
@@ -299,7 +299,7 @@ public class MyFileUtil {
 		try {
 			return MyFileUtil.fileRead(filename).split("\n");
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 		}
 		return new String[0];
 	}
@@ -318,7 +318,7 @@ public class MyFileUtil {
 			}
 			brIn.close();
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(e);
 		}
 		return strb.toString();
 	}
@@ -352,7 +352,7 @@ public class MyFileUtil {
 				return null;
 			}
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 		}
 		return null;
 	}
@@ -370,7 +370,7 @@ public class MyFileUtil {
 				return null;
 			}
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error( e);
 		}
 		return null;
 	}

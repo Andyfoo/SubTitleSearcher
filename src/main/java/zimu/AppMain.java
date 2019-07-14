@@ -4,11 +4,14 @@ import java.io.File;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import zimu.common.UpgradeCommon;
 import zimu.gui.MainWin;
+import zimu.gui.parms.MovFileInfo;
 
 public class AppMain {
 	static final Log logger = LogFactory.get();
 	public static void main(String[] args) {
+		System.setProperty("crypto.policy", "unlimited");
 		try {
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
@@ -21,7 +24,8 @@ public class AppMain {
 		} catch (Exception e) {
 			logger.error(e);
 		}
-		MainWin.init();
+		MainWin.get().init();
+		UpgradeCommon.autocheck();
 		if(args.length > 0) {
 			//final File fileFromCommandLine = getFileFromCommandLine(args);
 			//MainWin.setFile(fileFromCommandLine.getAbsolutePath());
@@ -29,20 +33,19 @@ public class AppMain {
 				String filepath = args[0];
 				File file = new File(filepath);
 				if(file.exists()) {
-					MainWin.setFile(file.getAbsolutePath());
-					MainWin.startSearch();
+					MovFileInfo.setFile(file.getAbsolutePath());
+					//MainWin.startSearch();
 				}else {
 					filepath = System.getProperty("user.dir") + File.separator + filepath;
 					file = new File(filepath);
 					if(file.exists()) {
-						MainWin.setFile(file.getAbsolutePath());
-						MainWin.startSearch();
+						MovFileInfo.setFile(file.getAbsolutePath());
+						//MainWin.startSearch();
 					}
 				}
 			}
 			//JOptionPane.showMessageDialog(MainWin.frame, System.getProperty("user.dir"));
 		}
 	}
- 
 
 }

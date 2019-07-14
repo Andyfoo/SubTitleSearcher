@@ -20,7 +20,7 @@ import zimu.util.regex.RegexUtil;
  */
 public class HtHttpUtil {
 	static final Log logger = LogFactory.get();
-	
+
 	public boolean debug = false;
 
 	public String default_charset = "UTF-8";
@@ -53,16 +53,19 @@ public class HtHttpUtil {
 		}
 		return req;
 	}
-	
+
 	/**
-	 * 获取头部文件名配置
-	 * Content-Disposition=[attachment; filename="Downsizing.2017.1080p.Bluray.MKV.x264.AC3.ass"]
+	 * 获取头部文件名配置 Content-Disposition=[attachment;
+	 * filename="Downsizing.2017.1080p.Bluray.MKV.x264.AC3.ass"]
+	 * 
 	 * @param resp
 	 * @return
 	 */
 	public static String getFileName(HttpResponse resp) {
-		String desp = new String(resp.header("Content-Disposition").getBytes(CharsetUtil.CHARSET_ISO_8859_1), CharsetUtil.CHARSET_UTF_8);
-		if(desp == null || desp.indexOf("filename") == -1)return null;
+		String desp = new String(resp.header("Content-Disposition").getBytes(CharsetUtil.CHARSET_ISO_8859_1),
+				CharsetUtil.CHARSET_UTF_8);
+		if (desp == null || desp.indexOf("filename") == -1)
+			return null;
 		return RegexUtil.getMatchStr(desp, "filename=\"([^\"]+)\"");
 	}
 
@@ -92,17 +95,23 @@ public class HtHttpUtil {
 		logger.info("get=" + url);
 
 		try {
-			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua).header(Header.ACCEPT_CHARSET, charset).charset(charset).header(Header.ACCEPT, _accept)
-					.header(Header.ACCEPT_ENCODING, _accept_encoding).header(Header.REFERER, refer != null ? refer : url).header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out))
-							.execute();
+			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua)
+					.header(Header.ACCEPT_CHARSET, charset).charset(charset)
+					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
+					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
+			if (debug) {
 				logger.info(response.toString());
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return get(response.header("Location"),charset, ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return get(location, charset, ua, refer);
+			} else if (statusCode == 200) {
 				return response.body();
 			} else {
 				logger.error(url + ", failed: " + statusCode);
@@ -144,17 +153,23 @@ public class HtHttpUtil {
 	public String post(String url, Map<String, Object> list, String charset, String ua, String refer) {
 		logger.info("post=" + url);
 		try {
-			HttpResponse response = addHeader(HttpRequest.post(url).form(list).header(Header.USER_AGENT, ua).header(Header.ACCEPT_CHARSET, charset).charset(charset).header(Header.ACCEPT, _accept)
-					.header(Header.ACCEPT_ENCODING, _accept_encoding).header(Header.REFERER, refer != null ? refer : url).header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out))
-							.execute();
+			HttpResponse response = addHeader(HttpRequest.post(url).form(list).header(Header.USER_AGENT, ua)
+					.header(Header.ACCEPT_CHARSET, charset).charset(charset)
+					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
+					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
-				logger.info("response header:"+getRespHeaderStr(response));
+			if (debug) {
+				logger.info("response header:" + getRespHeaderStr(response));
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return post(response.header("Location"), list, charset, ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return post(location, list, charset, ua, refer);
+			} else if (statusCode == 200) {
 				return response.body();
 			} else {
 				logger.error(url + ", failed: " + statusCode);
@@ -196,31 +211,37 @@ public class HtHttpUtil {
 	public String postStream(String url, String data, String charset, String ua, String refer) {
 		logger.info("postStream=" + url);
 		try {
-			HttpResponse response = addHeader(HttpRequest.post(url).body(data, _stream_media_type).header(Header.USER_AGENT, ua).header(Header.ACCEPT_CHARSET, charset).charset(charset)
-					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding).header(Header.REFERER, refer != null ? refer : url)
+			HttpResponse response = addHeader(HttpRequest.post(url).body(data, _stream_media_type)
+					.header(Header.USER_AGENT, ua).header(Header.ACCEPT_CHARSET, charset)
+					.charset(charset).header(Header.ACCEPT, _accept)
+					.header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
 					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
-				logger.info("response header:"+getRespHeaderStr(response));
+			if (debug) {
+				logger.info("response header:" + getRespHeaderStr(response));
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return postStream(response.header("Location"),data, charset, ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return postStream(location, data, charset, ua, refer);
+			} else if (statusCode == 200) {
 				return response.body();
 			} else {
 				logger.error(url + ", failed: " + statusCode);
 				return null;
 			}
 		} catch (Exception e) {
-			logger.error( e);
+			logger.error(e);
 			return null;
 		} finally {
 		}
 
 	}
 
-	
 	public String getRespHeaderStr(HttpResponse response) {
 		StringBuilder sb = StrUtil.builder();
 		sb.append("Response Headers: ").append(StrUtil.CRLF);
@@ -230,6 +251,7 @@ public class HtHttpUtil {
 		}
 		return sb.toString();
 	}
+
 	/**
 	 * 返回HttpResponse
 	 * 
@@ -249,16 +271,22 @@ public class HtHttpUtil {
 		logger.info("getResponse=" + url);
 
 		try {
-			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua).header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
-					.header(Header.REFERER, refer != null ? refer : url).header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
+			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua)
+					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
+					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
-				logger.info("response header:"+getRespHeaderStr(response));
+			if (debug) {
+				logger.info("response header:" + getRespHeaderStr(response));
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return getResponse(response.header("Location"), ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return getResponse(location, ua, refer);
+			} else if (statusCode == 200) {
 				return response;
 			} else {
 				logger.error(url + ", failed: " + statusCode);
@@ -270,6 +298,7 @@ public class HtHttpUtil {
 		} finally {
 		}
 	}
+
 	/**
 	 * 读取2进制数据
 	 * 
@@ -289,16 +318,22 @@ public class HtHttpUtil {
 		logger.info("getBytes=" + url);
 
 		try {
-			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua).header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
-					.header(Header.REFERER, refer != null ? refer : url).header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
+			HttpResponse response = addHeader(HttpRequest.get(url).header(Header.USER_AGENT, ua)
+					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
+					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
-				logger.info("response header:"+getRespHeaderStr(response));
+			if (debug) {
+				logger.info("response header:" + getRespHeaderStr(response));
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return getBytes(response.header("Location"), ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return getBytes(location, ua, refer);
+			} else if (statusCode == 200) {
 				return response.bodyBytes();
 			} else {
 				logger.error(url + ", failed: " + statusCode);
@@ -327,16 +362,22 @@ public class HtHttpUtil {
 		logger.info("postBytes=" + url);
 
 		try {
-			HttpResponse response = addHeader(HttpRequest.post(url).form(list).header(Header.USER_AGENT, ua).header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
-					.header(Header.REFERER, refer != null ? refer : url).header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
+			HttpResponse response = addHeader(HttpRequest.post(url).form(list).header(Header.USER_AGENT, ua)
+					.header(Header.ACCEPT, _accept).header(Header.ACCEPT_ENCODING, _accept_encoding)
+					.header(Header.REFERER, refer != null ? refer : url)
+					.header(Header.ACCEPT_LANGUAGE, _accept_language).timeout(_time_out)).execute();
 
-			if(debug) {
-				logger.info("response header:"+getRespHeaderStr(response));
+			if (debug) {
+				logger.info("response header:" + getRespHeaderStr(response));
 			}
 			int statusCode = response.getStatus();
-			if (statusCode == 301) {
-				return postBytes(response.header("Location"),list, ua, url);
-			}else if (statusCode == 200) {
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return postBytes(location, list, ua, refer);
+			} else if (statusCode == 200) {
 				return response.bodyBytes();
 			} else {
 				logger.error(url + ", failed: " + statusCode);
@@ -356,13 +397,15 @@ public class HtHttpUtil {
 		String url = "http://www.test.com";
 		url = "http://localhost/print_r.php";
 		url = "http://localhost/print_r_utf8.php";
+		url = "https://subhd.tv/search0/downsizing.2017";
 
 		// System.out.println(inst.get(url));
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("aaaa", "111");
 		System.out.println(http.post(url, data));
 
-		//byte[] bytes = http.getBytes("http://www.oschina.net/img/newindex-03.svg?t=1451961935000");
+		// byte[] bytes =
+		// http.getBytes("http://www.oschina.net/img/newindex-03.svg?t=1451961935000");
 		// System.out.println(inst.postStream(url, "asdsasa中文sfdasd"));
 
 	}

@@ -30,7 +30,7 @@ public class WinRarUtil {
 		if(AppConfig.isExe) {
 			binPath = AppConfig.appPath + "bin/7z.exe";
 		}else {
-			binPath = AppConfig.appPath + "../../_release/SubTitleSearcher/bin/7z.exe";
+			binPath = AppConfig.appPath + "../../_release/bin/7z.exe";
 		}
 		//System.out.println(binPath);
 	}

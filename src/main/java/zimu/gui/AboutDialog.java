@@ -61,7 +61,7 @@ public class AboutDialog extends JDialog {
 		setResizable(false);
 
 		setLocationRelativeTo(this.getParent());
-		setTitle("About " + AppConfig.appName);
+		setTitle("About " + AppConfig.appTitle);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		add(mainPanel);
