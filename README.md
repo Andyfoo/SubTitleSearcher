@@ -1,5 +1,5 @@
 # SubTitleSearcher
-字幕搜索查询，支持4k 2160p,1080p,720p视频字幕搜索，集合了字幕库、迅雷、射手查询接口。
+字幕搜索查询，支持4k 2160p,1080p,720p视频字幕搜索，集合了字幕库、迅雷、射手、SubHD查询接口。
 
 可以拖动视频或选择视频开始搜索字幕
 ![可以拖动视频或选择视频开始搜索字幕](https://raw.githubusercontent.com/Andyfoo/SubTitleSearcher/master/docs/screenshot/p1.png)
