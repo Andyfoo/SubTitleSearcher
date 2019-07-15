@@ -1,32 +1,36 @@
 package zimu.tests;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import zimu.util.StringUtil;
 
 public class Test1 {
-
-	public static void main(String[] args) {
-		Runtime rt = Runtime.getRuntime();
-		StringBuffer result = new StringBuffer();
+	public static String getUrl(String url) {
 		try {
-			String upgradeCmd = "E:\\workspace\\_me\\dev\\my_tools\\SubTitleSearcher\\target\\test.bat";
-			
-			Process p = rt.exec("cmd /k "+upgradeCmd);
+			HttpResponse response = HttpRequest.get(url).execute();
 
-			InputStream fis = p.getInputStream();
-			InputStreamReader isr = new InputStreamReader(fis,"GBK");
-			BufferedReader br = new BufferedReader(isr);
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				result.append(line);
-				result.append("\r\n");
+			System.out.println(response.toString());
+			int statusCode = response.getStatus();
+			if (statusCode == 301 || statusCode == 302) {
+				String location = response.header("Location");
+				if (!location.toLowerCase().startsWith("http")) {
+					location = StringUtil.getBaseUrl(url) + location;
+				}
+				return getUrl(location);
+			} else if (statusCode == 200) {
+				return response.body();
+			} else {
+				System.out.println(url + ", failed: " + statusCode);
+				return null;
 			}
-			System.out.println(result.toString());
-			
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
+		} finally {
 		}
+	}
+	public static void main(String[] args) {
+		getUrl("https://subhd.tv");
 	}
 
 }

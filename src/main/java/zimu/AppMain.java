@@ -12,6 +12,7 @@ public class AppMain {
 	static final Log logger = LogFactory.get();
 	public static void main(String[] args) {
 		System.setProperty("crypto.policy", "unlimited");
+		//System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,SSLv3");
 		try {
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");

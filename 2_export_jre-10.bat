@@ -4,7 +4,7 @@ set PATH=%JAVA_HOME%\bin
 set PUBLISH_PATH=_publish
 set PUBLISH_JRE_PATH=%PUBLISH_PATH%\jre
 rd /s /q %PUBLISH_JRE_PATH%\
-jlink -p %JAVA_HOME%/jmods --add-modules java.sql,javafx.base,javafx.swing,javafx.web --output %PUBLISH_JRE_PATH%
+jlink -p %JAVA_HOME%/jmods --add-modules jdk.crypto.ec,java.sql,javafx.base,javafx.swing,javafx.web --output %PUBLISH_JRE_PATH%
 rd /s /q %PUBLISH_JRE_PATH%\legal
 rd /s /q %PUBLISH_JRE_PATH%\include
 

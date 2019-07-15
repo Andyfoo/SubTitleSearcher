@@ -24,7 +24,7 @@ import zimu.util.regex.RegexUtil;
 
 public class SubHDCommon {
 	static final Log logger = LogFactory.get();
-	static String baseUrl = "http://subhd.com";
+	static String baseUrl = "https://subhd.tv";
 	
 	public static void main(String[] args) throws Exception {
 		//System.out.println(DownList("憨豆特工.mkv"));
