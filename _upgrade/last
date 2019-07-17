@@ -2,6 +2,6 @@
 	"version" : "2.0.3",
 	"type" : "exe",
 	"sign" : "D28ADC1A6E973CFA7D180194338F802D",
-	"desc" : "增加SubHd源，更新界面风格",
+	"desc" : "修改压缩文件窗口保存文件失败问题",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/__upgrade_files/SubTitleSearcher.exe",
 } 
