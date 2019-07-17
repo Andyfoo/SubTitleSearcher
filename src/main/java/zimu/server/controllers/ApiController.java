@@ -12,6 +12,11 @@ import zimu.down.DownZIMu;
 import zimu.gui.parms.DownParm;
 import zimu.gui.parms.SearchParm;
 
+/**
+ * 列表页面查询接口
+ * @author FH
+ *
+ */
 public class ApiController extends Base {
 	static final Log logger = LogFactory.get();
 	

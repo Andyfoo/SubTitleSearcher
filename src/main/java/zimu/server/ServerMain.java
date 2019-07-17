@@ -7,6 +7,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import zimu.AppConfig;
 import zimu.server.controllers.ApiController;
+import zimu.server.controllers.ExtractApiController;
 import zimu.server.controllers.IndexController;
 
 public class ServerMain {
@@ -20,6 +21,7 @@ public class ServerMain {
 		serverConfig.setHttpJsonMessageConverter(new MyHttpJsonMessageConverter());
 		serverConfig.getRouter().addMapper("", IndexController.class);
 		serverConfig.getRouter().addMapper("/api", ApiController.class);
+		serverConfig.getRouter().addMapper("/extract_api", ExtractApiController.class);
 		boolean runResult = new WebServerBuilder.Builder().serverConfig(serverConfig).build().startWithThread();
 		logger.info("ServerMain start runResult="+runResult);
 		if(!runResult && tryCount++ < 50) {

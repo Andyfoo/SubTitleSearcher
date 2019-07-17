@@ -67,8 +67,13 @@ $(function(){
 		window.last_list_table_tr = $(this);
 	});
 	$('.list_table').on('click','.download',function(){
+		var btn = this;
+		btn.disabled = true;
 		var tr = $(this).parents('tr');
 		down_zimu(tr.find('input[name="item_id"]').val(), tr.find('select[name="item_simplified_charset"]').val());
+		window.setTimeout(function(){
+			btn.disabled = false;
+		}, 300);
 	});
 	
 	$('#simplified_select_all').change(function(){
@@ -86,8 +91,8 @@ $(function(){
 	});
 	
 	$('#btn_download').on('click', function(){
-		var _this = this;
-		this.disabled = true;
+		var btn = this;
+		btn.disabled = true;
 		
 		var items_ids = [];
 		
@@ -106,6 +111,7 @@ $(function(){
 			}
 		});
 		if(items_ids.length == 0){
+			btn.disabled = false;
 			my_alert('请选择字幕');
 			return;
 		}
@@ -113,40 +119,54 @@ $(function(){
 		var searchData = {
 			items : items_ids
 		};
-		my_loading_show();
-		if(app.downArchiveFile(json_encode(searchData))){
-			my_tip('下载成功');
-		}else{
-			my_tip('下载失败');
-		}
-		my_loading_hide();
-		window.setTimeout(function(){
-			_this.disabled = false;
-		}, 300);
+		ajax_jsonp('/extract_api/down_archive_file',{
+			data : json_encode(searchData)
+		}, function (data){
+			btn.disabled = false;
+			if(data.result > 0){
+				my_alert(data.message);
+				return;
+			}
+			if(data == null){
+				my_alert('初始化数据失败');
+				return;
+			}
+			if(data.saveSelected){
+				my_tip('下载成功');
+			}else{
+				my_tip('下载失败');
+			}
+		});
 	});
-	
+
+	//window.serverPort = serverPort;
+	window.serverUrl = "http://127.0.0.1:"+serverPort;
 	laytpl_preload('#rec_list_tpl');
 	init_data();
 });
+
 function init_data(){
-	my_loading_show();
-	var data = app.getInitData();
-	if(data == null){
-		my_alert('初始化数据失败');
-		return;
-	}
-	data = json_decode(data);
-	
-	$('#search_box .con').html(data.title + '<span class="light">('+data.archiveExt+', '+data.archiveSizeF+')</span>');
-	
-	$('#status_label').html('压缩包里共有'+data.list.length+'个字幕文件');
-	$('#rec_list').empty();
-	laytpl_render('#rec_list_tpl', data, function(html){
-		$('#rec_list').append(html);
-		$('#batch_from').newforms();
+	ajax_jsonp('/extract_api/get_init_data',{
+		
+	}, function (data){
+		if(data.result > 0){
+			my_alert(data.message);
+			return;
+		}
+		if(data == null){
+			my_alert('初始化数据失败');
+			return;
+		}
+		
+		$('#search_box .con').html(data.title + '<span class="light">('+data.archiveExt+', '+data.archiveSizeF+')</span>');
+		
+		$('#status_label').html('压缩包里共有'+data.list.length+'个字幕文件');
+		$('#rec_list').empty();
+		laytpl_render('#rec_list_tpl', data, function(html){
+			$('#rec_list').append(html);
+			$('#batch_from').newforms();
+		});
 	});
-	
-	my_loading_hide();
 }
 //下载鼠标最后移动到的字幕
 function down_last_tr_zimu(charset){
@@ -179,11 +199,21 @@ function down_zimu(id, charset){
 	var searchData = {
 		items : items_ids
 	};
-	my_loading_show();
-	if(app.downArchiveFile(json_encode(searchData))){
-		my_tip('下载成功');
-	}else{
-		my_tip('下载失败');
-	}
-	my_loading_hide();
+	ajax_jsonp('/extract_api/down_archive_file',{
+		data : json_encode(searchData)
+	}, function (data){
+		if(data.result > 0){
+			my_alert(data.message);
+			return;
+		}
+		if(data == null){
+			my_alert('初始化数据失败');
+			return;
+		}
+		if(data.saveSelected){
+			my_tip('下载成功');
+		}else{
+			my_tip('下载失败');
+		}
+	});
 }

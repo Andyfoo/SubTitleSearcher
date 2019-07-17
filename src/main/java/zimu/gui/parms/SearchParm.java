@@ -9,7 +9,11 @@ public class SearchParm {
 	public boolean from_zimuku = true;
 	public boolean from_subhd = false;
 	
-
+//	public boolean from_sheshou = false;
+//	public boolean from_xunlei = false;
+//	public boolean from_zimuku = false;
+//	public boolean from_subhd = true;
+	
 
 
 	public boolean isFrom_sheshou() {

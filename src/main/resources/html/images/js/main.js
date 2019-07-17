@@ -28,10 +28,6 @@ window.app = {
 		if(!this.inApp())return false;
 		return javaApp.copyClipboard(str);
 	},
-	downArchiveFile : function(data){
-		if(!this.inApp())return false;
-		return javaApp.downArchiveFile(data);
-	},
 	inApp : function(){
 		return (typeof(javaApp)=='object' && typeof(javaApp.test) == 'function')
 	}	
@@ -75,13 +71,22 @@ function set_select_all(id, bat_name){
 		var _this = this;
 		$('input[name="'+bat_name+'"]').each(function (){
 			this.checked = _this.checked;
+			if(this.checked){
+				$(this).attr('checked', 'checked');
+				$(this).prop("checked");
+			}else{
+				$(this).removeAttr('checked');
+				$(this).removeProp("checked");
+			}
+		
 			$(this).trigger('nf_change');
 		})
 	});
-	var bat_list = $('input[name="'+bat_name+'"]');
-	bat_list.change(function (){
+	$(document).on('change', 'input[name="'+bat_name+'"]', function (){
 		var _this = this;
-		console.log(bat_list.filter('[checked]').length);
+		var bat_list = $('input[name="'+bat_name+'"]');
+		///console.log($('.list_table').html())
+		//console.log(bat_list.filter('[checked]').length+","+bat_list.length)
 		if(bat_list.filter('[checked]').length == bat_list.length){
 			$(id).get(0).checked = true;
 			$(id).trigger('nf_change');

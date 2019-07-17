@@ -29,9 +29,9 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import netscape.javascript.JSObject;
 import zimu.AppConfig;
 import zimu.gui.parms.DownParm;
+import zimu.server.ServerMain;
 import zimu.util.MyFileUtil;
 import zimu.util.StringUtil;
 import zimu.util.WinRarUtil;
@@ -40,19 +40,21 @@ public class ExtractDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	static final Log logger = LogFactory.get();
+	
+	public static ExtractDialog extractDialog = null;
 
-	String title;
+	public String title;
 
 	private JFXPanel bsPanel = new JFXPanel();
 	WebView webview;
 	Scene webviewScene;
 
-	byte[] archiveData;
-	String archiveExt;
-	String subFilename;
+	public byte[] archiveData;
+	public String archiveExt;
+	public String subFilename;
 
 	String archivePath;
-	List<File> archiveFiles;
+	public List<File> archiveFiles;
 
 	DownParm downParm;
 	int zimuIndex;
@@ -70,8 +72,9 @@ public class ExtractDialog extends JDialog {
 		this.archiveExt = ext;
 		this.subFilename = filename;
 
-		initData();
+		
 		initComponents();
+		extractDialog = this;
 	}
 
 	@Override
@@ -92,7 +95,19 @@ public class ExtractDialog extends JDialog {
 		clear();
 		setVisible(false);
 	}
+	private void jsAlert(String message) {
+		JOptionPane.showMessageDialog(this, message);
+	}
 
+	private boolean jsConfirm(String message) {
+		int r = JOptionPane.showConfirmDialog(this, message, "提示信息", JOptionPane.YES_NO_OPTION);
+		if (r == JOptionPane.YES_OPTION) {
+			return true;
+		} else if (r == JOptionPane.NO_OPTION) {
+			return false;
+		}
+		return false;
+	}
 	public void alert(String str) {
 		JOptionPane.showMessageDialog(this, str);
 	}
@@ -192,36 +207,46 @@ public class ExtractDialog extends JDialog {
 		com.sun.javafx.webkit.WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId) -> {
 			logger.info("from webview: " + message + " [" + sourceId + " - " + lineNumber + "]");
 		});
-		ExtractDialogJsApp extractDialogJsApp = new ExtractDialogJsApp(this);
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				
+				
 				webview = new WebView();
 				// webview.setContextMenuEnabled(false);
 
 				WebEngine webEngine = webview.getEngine();
 
 				webEngine.setJavaScriptEnabled(true);
+				webEngine.setOnAlert(event -> jsAlert(event.getData()));
+				webEngine.setConfirmHandler(message -> jsConfirm(message));
 
 				webEngine.setOnError(event -> {
 					logger.info(event.getMessage());
 				});
-				((JSObject) webEngine.executeScript("window")).setMember("javaApp", extractDialogJsApp);
-
-				webEngine.load(url);
+//				webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
+//					
+//				});
+				
 				webviewScene = new Scene(webview);
 				bsPanel.setScene(webviewScene);
+				
+				initData();
+				webEngine.load(url);
+				webview.getEngine().executeScript("window.serverPort="+AppConfig.serverPort+"");
+				
 			}
 		});
 	}
 
 	public static void main(String args[]) {
+		ServerMain.start();
 		GuiConfig.setUIFont();
 		// String filename = "E:/workspace/_me/dev/my_libs/test_lib/data/file/archive/test.7z";
 
 		String ext = "rar";
 		String filename = "H:/_tmp/MOV/[zmk.tw]Downsizing.2017.1080p.BluRay.x264-GECKOS." + ext;
-		filename = "E:/workspace/_me/dev/my_tools/SubTitleSearcher/target/test.rar";
+		filename = "E:/workspace/_me/dev/my_tools/SubTitleSearcher/target/_test_data/data.zip";
 
 		byte[] data = MyFileUtil.fileReadBin(filename);
 
