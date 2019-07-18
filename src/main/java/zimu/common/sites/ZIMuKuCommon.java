@@ -9,12 +9,14 @@ import org.jsoup.select.Elements;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import zimu.util.ExeJsUtil;
 import zimu.util.HtHttpUtil;
 import zimu.util.StringUtil;
 import zimu.util.regex.RegexUtil;
@@ -33,9 +35,9 @@ public class ZIMuKuCommon {
 	
 	public static void main(String[] args) throws Exception {
 		//System.out.println(DownList("憨豆特工.mkv"));
-		System.out.println(DownList("downsizing.2017.720p.bluray.x264-geckos.mkv"));
-		
-		
+		//System.out.println(DownList("downsizing.2017.720p.bluray.x264-geckos.mkv"));
+		System.out.println(DownList("From.Beijing.with.Love.1994.720p.BluRay.x264-WiKi.mkv"));
+		//System.out.println(getPageList("From.Beijing.with.Love"));
 		
 		//System.out.println(downContent("/detail/101779.html"));;
 		//detail/100250.html
@@ -67,13 +69,13 @@ public class ZIMuKuCommon {
 	 * @return
 	 */
 	public static JSONObject downContent(String url) {
-		String result = HtHttpUtil.http.get(baseUrl+url);
+		String result = httpGet(baseUrl+url);
 		String downUrl = RegexUtil.getMatchStr(result, 
 				"<a\\s+id=\"down1\"\\s+href=\"(/dld/[\\w]+\\.html)\""
 				, Pattern.DOTALL);
 		if(downUrl == null)return null;
 		downUrl = baseUrl + downUrl;
-		result = HtHttpUtil.http.get(downUrl);
+		result = httpGet(downUrl);
 		if(result == null)return null;
 		//System.out.println(result);
 		JSONArray resList = RegexUtil.getMatchList(result, 
@@ -102,7 +104,7 @@ public class ZIMuKuCommon {
 	 * @return
 	 */
 	public static JSONArray getDetailList(String url) {
-		String result = HtHttpUtil.http.get(baseUrl+url);
+		String result = httpGet(baseUrl+url);
 		//System.out.println(result);
 		Document doc = Jsoup.parse(result);
 		Elements matchList = doc.select("#subtb tbody tr");
@@ -189,7 +191,7 @@ public class ZIMuKuCommon {
 	 * @return
 	 */
 	public static JSONArray getPageList(String title) {
-		String result = HtHttpUtil.http.get(baseUrl+"/search?q="+URLUtil.encodeAll(title, CharsetUtil.CHARSET_UTF_8));
+		String result = httpGet(baseUrl+"/search?q="+URLUtil.encodeAll(title, CharsetUtil.CHARSET_UTF_8));
 		//System.out.println(result);
 		JSONArray resList = RegexUtil.getMatchList(result, "<p\\s+class=\"tt\\s+clearfix\"><a\\s+href=\"(/subs/[\\w]+\\.html)\"\\s+"
 				+ "target=\"_blank\"><b>(.*?)</b></a></p>", Pattern.DOTALL);
@@ -199,5 +201,27 @@ public class ZIMuKuCommon {
 		}
 		
 		return resList;
+	}
+	
+	public static String httpGet(String url) {
+		String result = HtHttpUtil.http.get(url);
+		if(result!=null && StrUtil.count(result, "url")>10 && result.contains("<script")) {
+			String jsStr = RegexUtil.getMatchStr(result, "<script[^>]*>(.*?)</script>");
+			jsStr = jsStr.replaceAll("window.location[\\s]*=[\\s]*url", "");
+			jsStr = jsStr.replaceAll("location[\\s]*=[\\s]*url", "");
+			if(jsStr==null) {
+				jsStr = "";
+			}
+			String jsVal = null;
+			try {
+				jsVal = ExeJsUtil.getJsVal("function getUrl(){"+jsStr+";return url;} getUrl()");
+			}catch(Exception e) {
+				logger.error(e);
+			}
+			if(jsVal!=null&&jsVal.length()>0) {
+				return httpGet(jsVal.contains("://") ? jsVal : baseUrl+jsVal);
+			}
+		}
+		return result;
 	}
 }
