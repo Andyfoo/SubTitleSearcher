@@ -1,7 +1,7 @@
 {
-	"version" : "2.0.3",
+	"version" : "2.0.4",
 	"type" : "exe",
-	"sign" : "D28ADC1A6E973CFA7D180194338F802D",
-	"desc" : "修改压缩文件窗口保存文件失败问题",
+	"sign" : "CC1394820780BD1019C87CACADAA5E57",
+	"desc" : "解决字幕库抓取限制问题",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/__upgrade_files/SubTitleSearcher.exe",
 } 
