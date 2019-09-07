@@ -1,7 +1,7 @@
 {
-	"version" : "2.0.4",
+	"version" : "2.0.5",
 	"type" : "exe",
-	"sign" : "CC1394820780BD1019C87CACADAA5E57",
-	"desc" : "解决字幕库抓取限制问题",
+	"sign" : "A242F7EE885F7E43E251E2E7D257F840",
+	"desc" : "增加字幕库查询关键字",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/__upgrade_files/SubTitleSearcher.exe",
 } 
