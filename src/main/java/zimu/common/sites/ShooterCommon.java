@@ -18,7 +18,7 @@ public class ShooterCommon {
 	private final static int BUFFER_SIZE = 4096;
 	
 	public static void main(String[] args) throws Exception {
-		String fileName = "H:/_tmp/MOV/downsizing.2017.720p.bluray.x264-geckos.mkv";
+		String fileName = "E:/_tmp/mov/downsizing.2017.720p.bluray.x264-geckos.mkv";
 		//fileName = "H:/_tmp/MOV/超人特工队.720p.国英台粤.mkv";
 	
 		JSONArray list = DownList(fileName);
@@ -26,7 +26,7 @@ public class ShooterCommon {
 		
 		String url = list.getJSONObject(0).getJSONArray("Files").getJSONObject(0).getStr("Link");
 		//HtHttpUtil.http.debug = true;
-		MyFileUtil.fileWrite("H:/_tmp/MOV/a.ass", HtHttpUtil.http.get(url, null,null, "https://www.shooter.cn/api/subapi.php"), "UTF-8", "");
+		MyFileUtil.fileWrite("E:/_tmp/mov/a.ass", HtHttpUtil.http.get(url, null,null, "https://www.shooter.cn/api/subapi.php"), "UTF-8", "");
 		
 	}
 	public static JSONArray DownList(String fileName) throws Exception {

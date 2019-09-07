@@ -5,7 +5,7 @@
 
 	<groupId>SubTitleSearcher</groupId>
 	<artifactId>SubTitleSearcher</artifactId>
-	<version>2.0.4.0</version>
+	<version>2.0.5.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<copyright>Copyright 2019 pslib.com</copyright>

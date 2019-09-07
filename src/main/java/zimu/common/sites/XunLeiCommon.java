@@ -14,8 +14,9 @@ public class XunLeiCommon {
 	static final Log logger = LogFactory.get();
 	
 	public static void main(String[] args) throws Exception {
-		String fileName = "H:/_tmp/MOV/downsizing.2017.720p.bluray.x264-geckos.mkv";
-		System.out.println(DownList(fileName));
+		String fileName = "E:/_tmp/mov/downsizing.2017.720p.bluray.x264-geckos.mkv";
+		System.out.println(getCid(fileName));
+		//System.out.println(DownList(fileName));
 		
 	}
 	public static JSONArray DownList(String fileName) throws Exception {

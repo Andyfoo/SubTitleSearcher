@@ -182,6 +182,14 @@ public class ZIMuKuCommon {
 				list = getPageList(title);
 			}
 		}
+		if(list.size() == 0 && (pos = title.lastIndexOf(".internal")) > 0) {
+			title = title.substring(0, pos+9);
+			list = getPageList(title);
+			if(list.size() == 0) {
+				title = title.substring(0, pos);
+				list = getPageList(title);
+			}
+		}
 		//System.out.println(list);
 		return list;
 	}
