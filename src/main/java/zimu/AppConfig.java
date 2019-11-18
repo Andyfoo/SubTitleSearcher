@@ -7,7 +7,7 @@ public class AppConfig {
 	public static String appName = "SubTitleSearcher";
 	public static String appTitle = "字幕下载";
 	//public static String appTitle = "SubTitleSearcher";
-	public static String appVer = "2.0.5";
+	public static String appVer = "2.0.6";
 	
 	public static String appPath;
 	public static boolean isExe;

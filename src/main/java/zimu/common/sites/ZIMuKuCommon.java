@@ -36,10 +36,10 @@ public class ZIMuKuCommon {
 	public static void main(String[] args) throws Exception {
 		//System.out.println(DownList("憨豆特工.mkv"));
 		//System.out.println(DownList("downsizing.2017.720p.bluray.x264-geckos.mkv"));
-		System.out.println(DownList("From.Beijing.with.Love.1994.720p.BluRay.x264-WiKi.mkv"));
+		//System.out.println(DownList("From.Beijing.with.Love.1994.720p.BluRay.x264-WiKi.mkv"));
 		//System.out.println(getPageList("From.Beijing.with.Love"));
 		
-		//System.out.println(downContent("/detail/101779.html"));;
+		System.out.println(downContent("/detail/101779.html"));;
 		//detail/100250.html
 	}
 	/**
@@ -79,14 +79,15 @@ public class ZIMuKuCommon {
 		if(result == null)return null;
 		//System.out.println(result);
 		JSONArray resList = RegexUtil.getMatchList(result, 
-				"<li><a\\s+rel=\"nofollow\"\\s+href=\"(/download/[^\"]+)\"", Pattern.DOTALL);
+				"<li><a\\s+rel=\"nofollow\"\\s+href=\"([^\"]*/download/[^\"]+)\"", Pattern.DOTALL);
 		if(resList == null || resList.size() == 0 || resList.getJSONArray(0).size() == 0)return null;
 		//HtHttpUtil.http.debug=true;
-		HttpResponse httpResp = HtHttpUtil.http.getResponse(baseUrl+resList.getJSONArray(0).getStr(0), null, downUrl);
+		HttpResponse httpResp = HtHttpUtil.http.getResponse(addBaseUrl(resList.getJSONArray(0).getStr(0)), null, downUrl);
 		int i = 0;
 		while(httpResp == null && resList.size() > ++i) {
-			httpResp = HtHttpUtil.http.getResponse(baseUrl+resList.getJSONArray(1).getStr(0), null, downUrl);
+			httpResp = HtHttpUtil.http.getResponse(addBaseUrl(resList.getJSONArray(1).getStr(0)), null, downUrl);
 		}
+		//System.out.println(httpResp);
 		if(httpResp == null)return null;
 		String filename = HtHttpUtil.getFileName(httpResp);
 		byte[] data = httpResp.bodyBytes();
@@ -97,6 +98,13 @@ public class ZIMuKuCommon {
 		resp.put("data", Base64.encode(data));
 		
 		return resp;
+	}
+	
+	public static String addBaseUrl(String url) {
+		if(url == null || url.startsWith("http://") || url.startsWith("https://")) {
+			return url;
+		}
+		return baseUrl+url;
 	}
 	
 	/**
