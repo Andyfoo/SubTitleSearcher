@@ -71,10 +71,13 @@ public class ZIMuKuCommon {
 	public static JSONObject downContent(String url) {
 		String result = httpGet(baseUrl+url);
 		String downUrl = RegexUtil.getMatchStr(result, 
-				"<a\\s+id=\"down1\"\\s+href=\"(/dld/[\\w]+\\.html)\""
+				"<a\\s+id=\"down1\"\\s+href=\"([^\"]*/dld/[\\w]+\\.html)\""
 				, Pattern.DOTALL);
 		if(downUrl == null)return null;
-		downUrl = baseUrl + downUrl;
+		if(!downUrl.startsWith("http")) {
+			downUrl = baseUrl + downUrl;
+		}
+		
 		result = httpGet(downUrl);
 		if(result == null)return null;
 		//System.out.println(result);

@@ -1,7 +1,7 @@
 {
-	"version" : "2.0.6",
+	"version" : "2.0.7",
 	"type" : "exe",
-	"sign" : "E29DE3FE0C52B62EA70B13859B48CD33",
+	"sign" : "607ABA7C06977F72B35339FBD9A2FF27",
 	"desc" : "修改字幕库下载失败问题",
 	"url" : "https://github.com/Andyfoo/SubTitleSearcher/raw/master/__upgrade_files/SubTitleSearcher.exe",
 } 
