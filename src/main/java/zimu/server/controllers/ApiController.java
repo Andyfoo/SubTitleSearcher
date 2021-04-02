@@ -1,5 +1,8 @@
 package zimu.server.controllers;
 
+import java.awt.Desktop;
+import java.net.URI;
+
 import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.api.HttpResponse;
 
@@ -20,6 +23,23 @@ import zimu.gui.parms.SearchParm;
 public class ApiController extends Base {
 	static final Log logger = LogFactory.get();
 	
+	public void open_url() {
+		HttpRequest request = getRequest();
+		HttpResponse response = getResponse();
+		String url = request.getParaToStr("url");
+		if(url == null) {
+			outJsonpMessage(request,response, 1, "请求数据错误");
+			return;
+		}
+		try {
+			Desktop.getDesktop().browse(new URI(url));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			outJsonpMessage(request,response, 1, "系统错误");
+			return;
+		}
+		outJsonpMessage(request,response, 0, "OK");
+	}
 	/**
 	 * 查询字幕
 	 */

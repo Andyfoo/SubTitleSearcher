@@ -28,7 +28,7 @@ public class ZIMuKuCommon {
 
 	 */
 	//static String baseUrl = "https://www.zimuku.cn";
-	static String baseUrl = "https://www.zimuku.la";
+	static String baseUrl = "http://www.zimuku.la";
 
 	
 	

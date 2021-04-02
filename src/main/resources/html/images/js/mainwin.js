@@ -31,6 +31,9 @@ $(function(){
 				}
 			]
 		];
+		if(typeof(last_list_table_tr) == 'undefined' || last_list_table_tr.find('.download[url]').length>0){
+			menu = [];
+		}
 		var title;
 		if(typeof(last_list_table_tr) != 'undefined' && last_list_table_tr.length > 0){
 			title = last_list_table_tr.find('.title').text();
@@ -39,7 +42,7 @@ $(function(){
 				if(title.length > 100){
 					title = title.substring(0,100);
 				}
-				menu.push('|');
+				if(menu.length>0)menu.push('|');
 				menu.push([
 					'复制文字：'+title,
 					function (dom) {
@@ -62,6 +65,9 @@ $(function(){
 				]);
 			}
 		}
+		if(menu.length==0){
+			return;
+		}
                 ContextMenu.render(e,menu,this); //开始渲染
         });
 	$('.list_table').on('mouseenter','tr',function(){
@@ -69,6 +75,19 @@ $(function(){
 	});
 	$('.list_table').on('click','.download',function(){
 		var tr = $(this).parents('tr');
+
+		if($(this).attr('url')){
+			ajax_jsonp('/api/open_url',{
+				url : $(this).attr('url')
+			}, function (data){
+				if(data.result > 0){
+					my_alert(data.message);
+					return;
+				}
+				
+			});
+			return;
+		}
 		down_zimu(tr.find('input[name="item_id"]').val(), tr.find('select[name="item_simplified_charset"]').val());
 	});
 	

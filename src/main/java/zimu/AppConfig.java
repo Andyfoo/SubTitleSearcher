@@ -7,7 +7,7 @@ public class AppConfig {
 	public static String appName = "SubTitleSearcher";
 	public static String appTitle = "字幕下载";
 	//public static String appTitle = "SubTitleSearcher";
-	public static String appVer = "2.0.7";
+	public static String appVer = "2.0.8";
 	
 	public static String appPath;
 	public static boolean isExe;
@@ -32,7 +32,8 @@ public class AppConfig {
 		System.out.println("appPath="+appPath);
 	}
 	
-	public static String upgradeUrl = "https://raw.githubusercontent.com/Andyfoo/SubTitleSearcher/master/_upgrade/last";
+	//public static String upgradeUrl = "https://raw.githubusercontent.com/Andyfoo/SubTitleSearcher/master/_upgrade/last";
+	public static String upgradeUrl = "http://upgrade.res.pslib.com/my-apps/java/tools/SubTitleSearcher/last";
 	//public static String upgradeUrl = "http://localhost:8080/update/last";
 	
 }

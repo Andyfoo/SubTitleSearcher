@@ -29,10 +29,10 @@ public class SubHDCommon {
 	public static void main(String[] args) throws Exception {
 		//System.out.println(DownList("憨豆特工.mkv"));
 		System.out.println(DownList("downsizing.2017.720p.bluray.x264-geckos.mkv"));
-		System.out.println(getDetailList("/do0/3578939"));
+		//System.out.println(getDetailList("/a/378333"));
 		
 		
-		System.out.println(downContent("/ar0/378333"));;
+		//System.out.println(downContent("/ar0/378333"));;
 	}
 	/**
 	 * 下载字幕列表
@@ -92,17 +92,19 @@ public class SubHDCommon {
 	 */
 	public static JSONArray getDetailList(String url) {
 		String result = HtHttpUtil.http.get(baseUrl+url, HtHttpUtil.http.default_charset, HtHttpUtil.http._ua, baseUrl+url);
+		//System.out.println(result);
 		Document doc = Jsoup.parse(result);
-		Elements matchList = doc.select(".d_table tr");
+		Elements matchList = doc.select(".table-sm tr");
 		//System.out.println(matchList.html());
 		JSONArray detailList = new JSONArray();
 		for (Element matchRow : matchList) {
-			if(matchRow.select(".dt_edition").size() == 0)continue;
+			if(matchRow.select("a.text-dark").size() == 0)continue;
 			String html = matchRow.html();
 			String htmlLower = html.toLowerCase();
-			String downUrl = matchRow.select(".dt_down a").attr("href");
-			String title = matchRow.select(".dt_edition a").text().trim();
-			int downCount = Integer.valueOf(RegexUtil.getMatchStr(matchRow.select(".dt_count").text(), "([\\d]+)"));
+			String downUrl = matchRow.select("a.text-dark").get(0).attr("href");
+			//System.out.println(downUrl);
+			String title = matchRow.select("a.text-dark").get(0).text().trim();
+			int downCount = Integer.valueOf(RegexUtil.getMatchStr(matchRow.select("td.p-3").get(1).text(), "([\\d]+)"));
 			String ext = "";
 			for(String extName : AppConfig.subExtNames) {
 				//if(StrUtil.isNotEmpty(RegexUtil.getMatchStr(html, "(>"+extName+"<)", Pattern.CASE_INSENSITIVE))) {
@@ -131,7 +133,7 @@ public class SubHDCommon {
 				lang="其它";
 			}
 			
-			Elements labels = matchRow.select(".label");
+			Elements labels = matchRow.select(".text-secondary span");
 			StringBuffer labelInfo = new StringBuffer();
 			labels.forEach(element ->{
 				labelInfo.append(element.text() + "，");
@@ -139,10 +141,14 @@ public class SubHDCommon {
 			if(labelInfo.length() > 0) {
 				labelInfo.delete(labelInfo.length()-1, labelInfo.length());
 			}
-			String zimuzu = matchRow.select("a.gray").text();
+			String zimuzu = "";
+			if((matchRow.select("a").get(0).attr("href")+"").contains("/zu/")) {
+				zimuzu = matchRow.select("a").get(0).text();
+			}
 			
 			JSONObject dataRow = new JSONObject();
 			dataRow.put("url", downUrl);
+			dataRow.put("baseUrl", baseUrl);
 			dataRow.put("title", title);
 			dataRow.put("ext", ext);
 			dataRow.put("lang",lang);
@@ -220,7 +226,7 @@ public class SubHDCommon {
 	public static JSONArray getPageList(String title) {
 		String result = HtHttpUtil.http.get(baseUrl+"/search0/"+URLUtil.encodeAll(title, CharsetUtil.CHARSET_UTF_8), HtHttpUtil.http.default_charset,HtHttpUtil.http._ua, baseUrl);
 		//System.out.println(result);
-		JSONArray resList = RegexUtil.getMatchList(result, "<a href=\"(/do[\\w]+/[\\w]+)\"><img", Pattern.DOTALL);
+		JSONArray resList = RegexUtil.getMatchList(result, "<a href=\"(/d/[\\w]+)\"><img", Pattern.DOTALL);
 		//System.out.println(resList);
 		if(resList == null) {
 			return new JSONArray();
